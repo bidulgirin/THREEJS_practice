@@ -1,9 +1,26 @@
-// export 한걸 가져오려면 import 
-//import { hello1 , hello2 } from './hello.js'  // hello1 함수에 {}를 치면 번거롭지 않게.. 아 import 하니까 ...응...
-//import * as hell from "./hello.js"
-//hell 이런거 같은경우 우리가 임의로 정한 이름이다...hello 든hell 이든 저 경로("./hello.js")만 맞으면 상관없이 쓸수있다.....!!!!
-import hello1 from './hello.js';
-hello1(); 
-hell.hello2();  
+import * as THREE from './three.module.js'; //경로 조심! 
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+
+			camera.position.z = 5;
+
+			function animate() {
+				requestAnimationFrame( animate );
+
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
 
