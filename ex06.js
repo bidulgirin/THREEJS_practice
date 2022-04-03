@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
-// 주제: 애니메이션 사용해보기
-
+// 주제:getElapsedTime 대신에 getDelta 사용하기
 
 export default function example(){
 // Renderer

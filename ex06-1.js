@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// 주제: animation 
+// 주제: 애니메이션 사용해보기
 
 
 export default function example(){
@@ -44,19 +44,25 @@ const material = new THREE.MeshStandardMaterial({
 });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
-//그리는 것을 함수로 만듦
+//
+//그리기
+const clock = new THREE.Clock();
 function draw(){
-    //animation
-    //mesh.rotation.y += 0.02;
-    //360 도는 2파이 ... -> 각도는 radian을 사용한다고 함
-    mesh.rotation.y += THREE.MathUtils.degToRad(2); // -> 요값이 우리가 잘알고있는 360도가 기준임
-    mesh.position.y += 0.01;
+   
+    const delta = clock.getDelta(); // getElapsedTime 이랑 같이 쓰면 동작오류남 
+    /* oldTime이 설정된 이후로부터 지난 초를 가져오며 oldTime을 현재 시간으로 설정합니다.
+    autoStart가 true 이고 시계가 멈춰있는 상태라면, 시계를 시작시킵니다.
+    delta... 시간 차라고 생각하면 됨*/
+    // mesh.rotation.y += THREE.MathUtils.degToRad(2); 
+    // mesh.position.y += 0.01;
+    mesh.rotation.y += 2 * delta; // delta만 쓰면 rotate가 안됨+=delta 해줘야함
+    mesh.position.y += delta;
     if(mesh.position.y > 3){
         mesh.position.y = 0;
     }
     renderer.render(scene, camera); 
-       //renderer.setAnimationLoop(draw); // ->같은 기능이긴한데 vr같은거 만들때 꼭 이걸 사용해야함
-    window.requestAnimationFrame(draw); // 함수를 계속 호출시킴으로써 빙글뱅글 돌게함
+       
+    window.requestAnimationFrame(draw); 
  
 }
 
