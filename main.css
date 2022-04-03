@@ -1,8 +1,10 @@
 body {
   margin: 0;
+  background:rgb(130, 71, 233);
 }
 #three-canvas {
   position: absolute;
   top: 0;
   left: 0;
+  
 }
