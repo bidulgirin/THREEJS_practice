@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// 주제: light
+// 주제: 애니메이션 사용해보기
 
 
 export default function example(){
@@ -9,12 +9,12 @@ const canvas = document.querySelector('#three-canvas');
 const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
-    alpha: true // 바탕화면이 투명해짐
+    alpha: true
 }); 
 renderer.setSize( window.innerWidth, window.innerHeight); 
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); 
-//renderer.setClearAlpha(0.5); // 불투명해짐
-renderer.setClearColor(0X00ff00); //'#00ff00' 'green' 해도 같음
+
+renderer.setClearColor(0X00ff00); 
 renderer.setClearAlpha(0.5);
 
 //Scene
@@ -30,21 +30,36 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.set(1,2,5);
 camera.lookAt(0,0,0);
-camera.zoom = 2;
+camera.zoom = 0.5;
 camera.updateProjectionMatrix();
 scene.add( camera ); 
 // Light
-const light = new THREE.DirectionalLight(0xffffff ,1); //DirectionalLight 태양빛이라고 생각하면 편함
+const light = new THREE.DirectionalLight(0xffffff ,1); 
 light.position.set(1,2,5);
 scene.add(light);
 //  Mesh 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshStandardMaterial({ //MeshBasicMaterial 는 빛과 관계없이 사물을 보여주는 material 속성이다 
+const material = new THREE.MeshStandardMaterial({ 
     color: 'pink'
 });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
-renderer.render(scene, camera); 
+//그리는 것을 함수로 만듦
+function draw(){
+    //animation
+    //mesh.rotation.y += 0.02;
+    //360 도는 2파이 ... -> 각도는 radian을 사용한다고 함
+    mesh.rotation.y += THREE.MathUtils.degToRad(2); // -> 요값이 우리가 잘알고있는 360도가 기준임
+    mesh.position.y += 0.01;
+    if(mesh.position.y > 3){
+        mesh.position.y = 0;
+    }
+    renderer.render(scene, camera); 
+       //renderer.setAnimationLoop(draw); // ->같은 기능이긴한데 vr같은거 만들때 꼭 이걸 사용해야함
+    window.requestAnimationFrame(draw); // 함수를 계속 호출시킴으로써 빙글뱅글 돌게함
+ 
+}
+
 
 // resize event
 function setSize(){
@@ -55,7 +70,7 @@ function setSize(){
 }
 
 window.addEventListener( 'resize' , setSize);
-
+draw();
 }
 
 
