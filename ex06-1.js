@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-// 주제: 애니메이션 사용해보기
+// 주제: clock 대신에 자바스크립트 date 이용해서 애니메이션 실행하기
 
 
 export default function example(){
@@ -46,17 +46,13 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 //
 //그리기
-const clock = new THREE.Clock();
+let oldTime = Date.now() //1970년대부터...쭉 더해지던 값임 변수값이 대입이 되야하니까 let으로 함
 function draw(){
-   
-    const delta = clock.getDelta(); // getElapsedTime 이랑 같이 쓰면 동작오류남 
-    /* oldTime이 설정된 이후로부터 지난 초를 가져오며 oldTime을 현재 시간으로 설정합니다.
-    autoStart가 true 이고 시계가 멈춰있는 상태라면, 시계를 시작시킵니다.
-    delta... 시간 차라고 생각하면 됨*/
-    // mesh.rotation.y += THREE.MathUtils.degToRad(2); 
-    // mesh.position.y += 0.01;
-    mesh.rotation.y += 2 * delta; // delta만 쓰면 rotate가 안됨+=delta 해줘야함
-    mesh.position.y += delta;
+   const newTime = Date.now();// 새로운 now.date임
+   const deltaTime = newTime - oldTime ; //deltaTime 은 시간 차 값이고 계속 늘어나므로
+   oldTime = newTime;  // 현재 시점의 newTime을 oldTime에 넣어주어야 제대로된 시간차값이 입력된다 
+   mesh.rotation.y += deltaTime * 0.01;
+   mesh.position.y += deltaTime * 0.001;
     if(mesh.position.y > 3){
         mesh.position.y = 0;
     }
