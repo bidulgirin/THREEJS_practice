@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 
-// ----- 주제: 
+// ----- 주제: 위치 이동
 
 export default function example() {
 	// Renderer
@@ -59,7 +59,11 @@ export default function example() {
 
 	function draw() {
 		const delta = clock.getDelta();
-
+		mesh.position.set(-1, 2, -5);
+		// 거리를 잴 수 있는 메서드
+		//console.log(mesh.position.length());
+		//console.log(mesh.position.distanceTo(bew THREE.Vector3(1, 2, 0))); //백터3는 a point in 3d space 이다
+		//console.log(mesh.position.distanceTo(camera.position)); //-> 카메라와 메쉬 사이의 거리를 알수있음
 		renderer.render(scene, camera);
 		renderer.setAnimationLoop(draw);
 	}
