@@ -22,7 +22,9 @@ export default function example() {
 		0.1,
 		1000
 	);
-	camera.position.z = 5;
+	camera.position.x = 1;
+	camera.position.y = 4;
+	camera.position.z =0;
 	scene.add(camera);
 
 	//Lights
@@ -34,15 +36,22 @@ export default function example() {
 	scene.add(ambientLight, directionalLight);
 	
 	//AxesHelper
-	const axesHelper = new THREE.AxesHelper(3); // 축 helper 숫자로 크기 조절 가능
+	const axesHelper = new THREE.AxesHelper(3); // 축 helper 숫자로 크기 조절 가능 0,0,0 위치에 있어서 mesh를 움직일때 편하다
 	scene.add(axesHelper);
+
+	//GridHelper
+	const gridHelper = new THREE.GridHelper(5); // 그리드를 그려준다
+	scene.add(gridHelper);
 	// Mesh
 	const geometry = new THREE.BoxGeometry(1, 1, 1);
 	const material = new THREE.MeshStandardMaterial({
 		color: 'seagreen'
 	});
 	const mesh = new THREE.Mesh(geometry, material);
+	mesh.position.x = 2;
 	scene.add(mesh);
+	// mesh 를 바라보게 해줘
+	camera.lookAt(mesh.position);
 
 	// 그리기
 	const clock = new THREE.Clock();
