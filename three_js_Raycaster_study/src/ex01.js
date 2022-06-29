@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Points } from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 // ----- 주제: 
 
@@ -51,18 +51,28 @@ export default function example() {
 	const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 	const boxMaterial = new THREE.MeshStandardMaterial({ color:'plum' });
 	const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+	boxMesh.name = 'box';
 
 	const torusGeometry = new THREE.TorusGeometry(2, 0.5, 16, 100);
 	const torusMaterial = new THREE.MeshStandardMaterial({color: 'lime'});
 	const torusMesh = new THREE.Mesh(torusGeometry, torusMaterial);
-
+	torusMesh.name = 'torus';
+	
 	scene.add(boxMesh, torusMesh);
-
+	const meshes = [boxMesh, torusMesh]; //광선에 맞았는지 한번에 체크하기 편해서 배열에 넣음
+	
+	const raycaster = new THREE.Raycaster();
 	// 그리기
 	const clock = new THREE.Clock();
 
 	function draw() {
 		const delta = clock.getDelta();
+
+		const origin = new THREE.Vector3(0, 0, 100);
+		const direction = new THREE.Vector3(0, 0, -100);
+		raycaster.set(origin, direction);
+
+		console.log(raycaster.intersectObjects(meshes));
 
 		renderer.render(scene, camera);
 		renderer.setAnimationLoop(draw);
