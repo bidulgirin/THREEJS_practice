@@ -69,10 +69,14 @@ export default function example() {
 		const delta = clock.getDelta();
 
 		const origin = new THREE.Vector3(0, 0, 100);
-		const direction = new THREE.Vector3(0, 0, -100);
-		raycaster.set(origin, direction);
-
-		console.log(raycaster.intersectObjects(meshes));
+		const direction = new THREE.Vector3(0, 0, -1); //방향을 정함
+		
+		raycaster.set(origin, direction); // 광선을 세팅함
+		const intersect = raycaster.intersectObjects(meshes);
+		intersect.forEach(item=>{ // intersect의 각 원소를 foreach로 돌면서 아래 명령어를 실행함
+			console.log(item.object.name); //  raycaster 에 닿는 object의 이름을 출력
+			item.object.material.color.set('red'); // 이런식으로 닿는 object로 접근하여 조작할수있음
+		})
 
 		renderer.render(scene, camera);
 		renderer.setAnimationLoop(draw);
