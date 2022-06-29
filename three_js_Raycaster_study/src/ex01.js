@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { Points } from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
 // ----- 주제: 
 
@@ -22,8 +24,7 @@ export default function example() {
 		0.1,
 		1000
 	);
-	camera.position.y = 1.5;
-	camera.position.z = 4;
+	camera.position.set(5, 1.5, 4);
 	scene.add(camera);
 
 	// Light
@@ -36,14 +37,26 @@ export default function example() {
 	scene.add(directionalLight);
 
 	// Controls
-
+		const controls = new OrbitControls(camera, renderer.domElement);
 	// Mesh
-	const geometry = new THREE.BoxGeometry(1, 1, 1);
-	const material = new THREE.MeshStandardMaterial({
-		color: 'seagreen'
-	});
-	const mesh = new THREE.Mesh(geometry, material);
-	scene.add(mesh);
+	const lineMaterial = new THREE.LineBasicMaterial({color:'yellow'});
+	const points = [];
+	points.push(new THREE.Vector3(0, 0, 100));
+	points.push(new THREE.Vector3(0, 0, -100));
+		//bufferGeometry가 points에서 설정한것을 기반으로 셋팅함
+	const LineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+	const guide = new THREE.Line(LineGeometry, lineMaterial);	
+	scene.add(guide);
+
+	const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+	const boxMaterial = new THREE.MeshStandardMaterial({ color:'plum' });
+	const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+
+	const torusGeometry = new THREE.TorusGeometry(2, 0.5, 16, 100);
+	const torusMaterial = new THREE.MeshStandardMaterial({color: 'lime'});
+	const torusMesh = new THREE.Mesh(torusGeometry, torusMaterial);
+
+	scene.add(boxMesh, torusMesh);
 
 	// 그리기
 	const clock = new THREE.Clock();
@@ -61,7 +74,7 @@ export default function example() {
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.render(scene, camera);
 	}
-
+	
 	// 이벤트
 	window.addEventListener('resize', setSize);
 
