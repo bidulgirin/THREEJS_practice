@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { Points } from 'three';
+import { Points, Vector2 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// ----- 주제: 
+// ----- 주제: 클릭한 메쉬 선택하기
 
 export default function example() {
 	// Renderer
@@ -39,15 +39,7 @@ export default function example() {
 	// Controls
 		const controls = new OrbitControls(camera, renderer.domElement);
 	// Mesh
-	const lineMaterial = new THREE.LineBasicMaterial({color:'yellow'});
-	const points = [];
-	points.push(new THREE.Vector3(0, 0, 100)); //시각적인 광선
-	points.push(new THREE.Vector3(0, 0, -100));
-		//bufferGeometry가 points에서 설정한것을 기반으로 셋팅함
-	const LineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-	const guide = new THREE.Line(LineGeometry, lineMaterial);	
-	scene.add(guide);
-
+	
 	const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 	const boxMaterial = new THREE.MeshStandardMaterial({ color:'plum' });
 	const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -59,37 +51,22 @@ export default function example() {
 	torusMesh.name = 'torus';
 	
 	scene.add(boxMesh, torusMesh);
-	const meshes = [boxMesh, torusMesh]; //광선에 맞았는지 한번에 체크하기 편해서 배열에 넣음
+	const meshes = [boxMesh, torusMesh]; 
 	
 	const raycaster = new THREE.Raycaster();
+	const mouse = new THREE.Vector2(); //vector2 는 2차원 값을 갖는다.
+	
 	// 그리기
 	const clock = new THREE.Clock();
 
 	function draw() {
-		//const delta = clock.getDelta();
-		const time = clock.getElapsedTime(); // sin에서는 각도를 늘려줘야하니까 getDelta대신에 값이 증가하는 함수인 getElapsedTime 메서드를이용
 		
-		boxMesh.position.y = Math.sin(time) * 2; // 위아래로 움직이게 하는 함수
+		const time = clock.getElapsedTime(); 
+		
+		boxMesh.position.y = Math.sin(time) * 2; 
 		torusMesh.position.y = Math.cos(time) * 2;
-		boxMesh.material.color.set('plum'); // 광선에 안닿을때의 기본값을 설정해 둬야 광선에 닿은것 안닿은것 구분가능
+		boxMesh.material.color.set('plum'); 
 		torusMesh.material.color.set('lime');
-
-
-		const origin = new THREE.Vector3(0, 0, 100); //실제광선 raycaster은 시작점과 방향으로 설정됨
-		const direction = new THREE.Vector3(0, 0, -1); 
-		 /*raycaster에서 방향을 정할때는 정규화를 해야한데 그래야 인식함
-		 	방향을 정함 정규화해서 -1 이기때문에 -100을 -1로 바꾼것임
-			그대로 -100으로 사용하고 싶다면 direction.normalize(); 라는 메서드를 사용해서 정규화 해주면됨 
-		 	length 가 100에서 1로 변화함 */
-		
-		raycaster.set(origin, direction); // 광선을 세팅함
-
-
-		const intersect = raycaster.intersectObjects(meshes);
-		intersect.forEach(item=>{ // intersect의 각 원소를 foreach로 돌면서 아래 명령어를 실행함
-			console.log(item.object.name); //  raycaster 에 닿는 object의 이름을 출력
-			item.object.material.color.set('red'); // 이런식으로 닿는 object로 접근하여 조작할수있음
-		});
 
 		renderer.render(scene, camera);
 		renderer.setAnimationLoop(draw);
@@ -104,6 +81,18 @@ export default function example() {
 	
 	// 이벤트
 	window.addEventListener('resize', setSize);
+	canvas.addEventListener('click', e =>{
 
+		console.log(e.clientX , e.clientY); 
+		/* 
+			마우스로 클릭한 위치를 return 함 왼쪽위모서리가 기준임, 
+			하지만 threeJs에서는 맨가운데가 기준이므로 설정을 맞춰줘야한다!
+			three.js기준으로 clientX,Y값으로 맞춰준것임
+		
+		*/
+		mouse.x = e.clientX / canvas.clientWidth * 2 - 1; // 식 설명: 클릭한위치/ 캔버스크기 => 비율이 나옴 비율에 두배 해주고 절반값인 1을 빼주면 중간 값이 나옴
+		mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); // threejs에서는 위쪽이 y가 +이므로 -을붙혀 값을 맞춰준다 걍 외우자~~~
+		console.log(mouse); 
+	});
 	draw();
 }
